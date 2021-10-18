@@ -36,6 +36,22 @@ a = 0.05*ones(size(beta));
 [sstx2,esstx2] = ssteval(betax,paramsx,p,f,a,'diurnal');
 [sstx,esstx] = ssteval(betax,paramsx,p,f,a);
 
+%% calculate the statistics used to assess model
+R = 10^5; % rounding to 5 decimal places
+m = 1;
+r = round(R*params{m}.r)/R; % rounded residuals
+w = params{m}.d./sum(params{m}.d); % normalized weights
+rss = round(R^2*params{m}.rss)/R^2; % rounded error variance
+q = isfinite(r) & isfinite(rss);        % successful estimations
+
+% weighted root mean square error
+wrmse = sum((r(q).^2).*w(q)).^0.5;
+
+% weighted median of error variance
+wmed = weightedMedian(rss(q),w(q));
+
+disp(['weighted root mean square error = ' num2str(wrmse) ' K']);
+disp(['square root of weighted median variance = ' num2str(wmed.^0.5) ' K']);
 
 %% figures
 cc = lines(4); % colorscale for curves
