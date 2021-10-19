@@ -14,7 +14,7 @@ p = 1; % polynomial order
 f = [1 2 3]; % peridoifrequencies of model
 % choice of estimation parameters
 N = 3; % iteration number is N+1
-bw = 1; % starting kernel bandwidth
+bw = 1; % starting kernel bandwidth; cannot be equal or larger than 2
 D = 14; % factor for robust weight calculation; see Elipot et al. 2021
 
 for m = 1:1

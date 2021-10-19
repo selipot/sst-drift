@@ -18,7 +18,7 @@ function [betax,paramsx,beta,params] = lowesstatx(xi,yi,x,p,f,h,N,varargin)
 % P is order the polynomial s_P = \sum_p=0^P (x-xi)^p
 % F is row vector of cyclic frequencies (in units of cycles per unit time)
 % input can be empty i.e. F = []
-% H is the bandwith of the window kernel (of length 2H)
+% H is the bandwith of the window kernel (of length 2H). H should be < 2.
 % N determines the N+1 number of iterations of the estimation
 % 
 % [BETAX,PARAMSX,BETA,PARAMS] = lowesstatx(XI,YI,X,P,F,H,N,D) 
@@ -67,7 +67,12 @@ if nin == 0
 elseif nin == 1
     D = varargin{1};
 else
-    error('Only one optional argument is allowed');
+    error('Only one optional argument is allowed.');
+end
+
+% check that bandwidth is smaller than 2
+if h >= 2
+    error('The bandwidth H cannot be 2 or larger.');
 end
 
 % sort input data
