@@ -70,7 +70,7 @@ h2 = plot(timepresst{m},sst2{m},'x');
 h12 = plot(timepresst{m},sst{m},'x');
 datetick('x');
 title('SST estimates at original observation times');
-legend([h0 ho h1 h2 h12],{'Input data','Outliers','Non-diurnal SST','Diurnal SST anomalies','Total SST'});
+legend([h0 h1 h2 h12 ho],{'Input data','Non-diurnal SST','Diurnal SST anomalies','Total SST','Outliers'});
 ylabel('Degree Celsius');
 
 % figure of regular continuous estimates with confidence intervals
@@ -84,7 +84,7 @@ h22 = plot(numx{m},sstx2{m}+fac*esstx2{m}*[-1 1],'linewidth',0.5,'color',cc(2,:)
 h3 = plot(numx{m},sstx{m},'linewidth',1.5,'color',cc(3,:));
 h33 = plot(numx{m},sstx{m}+fac*esstx{m}*[-1 1],'linewidth',0.5,'color',cc(3,:));
 datetick('x');
-legend([h0 ho h1 h2 h3],{'Input data','Outliers','Non-diurnal SST','Diurnal SST anomalies','Total SST'});
+legend([h0 h1 h2 h3 ho],{'Input data','Non-diurnal SST','Diurnal SST anomalies','Total SST','Outliers'});
 title('SST estimates at regular hourly time steps');
 ylabel('Degree Celsius');
 
