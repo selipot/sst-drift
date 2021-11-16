@@ -1,4 +1,4 @@
-%% MIAN CODE
+%% MAIN CODE
 
 option = 0; % with option = 0, synthetic data are used
                  % change to option = 1 to use real drifter data
