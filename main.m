@@ -1,11 +1,35 @@
-% main code
+%% MIAN CODE
 
-% load the example dataset for drifter with GDP AOML ID 55366 (WMO ID 3100541)
-load('level0_sst_data_drifter_id55366.mat','presst','timepresst','numx');
-% timepresst is a cell array with observation times in days as returned by Matlab
-% datenum.m
-% presst is a cell array with the corresponding SST observations
-% numx is a cell array the target times for estimation
+option = 0; % with option = 0, synthetic data are used
+                 % change to option = 1 to use real drifter data
+
+if option % load the example dataset for drifter with GDP AOML ID 55366 (WMO ID 3100541)
+    
+    load('level0_sst_data_drifter_id55366.mat','presst','timepresst','numx');
+    % timepresst is a cell array with observation times in days as returned by Matlab
+    % datenum.m
+    % presst is a cell array with the corresponding SST observations
+    % numx is a cell array the target times for estimation
+    
+    D = 14; % factor for robust weight calculation; see Elipot et al. 2021
+                % suggest use D = 14 with real data and D = 6 with synthetic data            
+
+else % use synthetic data with a simple stochastic model
+    % linear model with sinusoidal oscillations (daily + 2 harmonics) and white noise
+    
+    N = 200; % length in days
+    t = (1/24)*(.5:1:N-.5); % observation time points [set to bottom of the hour]
+    alpha = [10 1]; gamma = [3 2 1]; sigma = .5; % stochastic model parameters    
+    x = alpha(1) + alpha(2)*t + gamma(1)*sin(t*2*pi) + gamma(2)*sin(t*4*pi) + gamma(3)*sin(t*6*pi) + sigma*randn(1,length(t));
+    tf = (1/24)*(1:1:N); % target time points [top of the hour]
+    
+    timepresst{1} = t; clear t
+    presst{1} = x; clear x
+    numx{1} = tf; clear tf
+    
+    D = 6; % factor for robust weight calculation; see Elipot et al. 2021
+              % suggest use D = 14 with real data and D = 6 with synthetic data            
+end
 
 %% estimation routine
 
@@ -15,7 +39,6 @@ f = [1 2 3]; % peridoifrequencies of model
 % choice of estimation parameters
 N = 3; % iteration number is N+1
 bw = 1; % starting kernel bandwidth; cannot be equal or larger than 2
-D = 14; % factor for robust weight calculation; see Elipot et al. 2021
 
 for m = 1:1
     tic;
@@ -73,6 +96,8 @@ title('SST estimates at original observation times');
 legend([h0 h1 h2 h12 ho],{'Input data','Non-diurnal SST','Diurnal SST anomalies','Total SST','Outliers'});
 ylabel('Degree Celsius');
 
+% you will get a warning if you have no outliers
+
 % figure of regular continuous estimates with confidence intervals
 figure, hold on
 h0 = plot(timepresst{m},round(1000*presst{m})/1000,'.','color',0.5*[1 1 1]);
@@ -87,6 +112,8 @@ datetick('x');
 legend([h0 h1 h2 h3 ho],{'Input data','Non-diurnal SST','Diurnal SST anomalies','Total SST','Outliers'});
 title('SST estimates at regular hourly time steps');
 ylabel('Degree Celsius');
+
+% you will get a warning if you have no outliers
 
 % It is best to zoom manually on the figure to see the results
 
